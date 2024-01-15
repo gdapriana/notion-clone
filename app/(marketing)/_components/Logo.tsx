@@ -10,8 +10,20 @@ const font = Poppins({
 export const Logo = () => {
   return (
     <div className="hidden md:flex items-center gap-x-2">
-      <Image src="/m.svg" alt="Logo" height="40" width="40" className="dark:hidden" />
-      <Image src="/m-dark.svg" alt="Logo" height="40" width="40" className="hidden dark:block" />
+      <Image
+        src="/m.svg"
+        alt="Logo"
+        height="40"
+        width="40"
+        className="dark:hidden"
+      />
+      <Image
+        src="/m-dark.svg"
+        alt="Logo"
+        height="40"
+        width="40"
+        className="hidden dark:block"
+      />
       <p className={cn('font-semibold', font.className)}>mindmemo</p>
     </div>
   );
