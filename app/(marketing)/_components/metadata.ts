@@ -5,7 +5,8 @@ export const metadata = {
   tagline: 'mindmemo: Connected Thoughts, Seamless Ideas',
   button: {
     auth: 'Open',
-    noauth: 'Join'
+    noauth: 'Join',
+    navbar: 'Sign in',
   },
   image: {
     normal: { document: '/documents.png', reading: '/reading.png' },

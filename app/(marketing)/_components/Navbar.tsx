@@ -6,8 +6,9 @@ import { DarkModeToggle } from '@/components/dark-mode-toggle';
 import { useConvexAuth } from 'convex/react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SignInButton, UserButton } from "@clerk/clerk-react";
-import { LogIn } from "lucide-react";
+import { SignInButton, UserButton } from '@clerk/clerk-react';
+import { LogIn } from 'lucide-react';
+import { metadata } from '@/app/(marketing)/_components/metadata';
 
 export const Navbar = () => {
   const { isAuthenticated, isLoading } = useConvexAuth();
@@ -24,16 +25,17 @@ export const Navbar = () => {
         {isLoading && <Skeleton className="w-[60px] h-[40px] rounded-lg" />}
         {!isLoading && !isAuthenticated && (
           <SignInButton mode="modal">
-            <Button className="gap-2" variant="ghost"><LogIn size={20} />Log In</Button>
+            <Button className="gap-2" variant="ghost">
+              <LogIn size={20} />
+              {metadata.button.navbar}
+            </Button>
           </SignInButton>
         )}
-        {
-          isAuthenticated && !isLoading && (
-            <div>
-              <UserButton afterSignOutUrl="/" />
-            </div>
-          )
-        }
+        {isAuthenticated && !isLoading && (
+          <div>
+            <UserButton afterSignOutUrl="/" />
+          </div>
+        )}
         <DarkModeToggle />
       </div>
     </div>
