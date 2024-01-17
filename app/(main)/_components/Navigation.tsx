@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronLeft, MenuIcon } from 'lucide-react';
-import { useRef, ElementRef, useState } from 'react';
+import { useRef, ElementRef, useState, useEffect } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -16,34 +16,72 @@ export const Navigation = () => {
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapse, setIsCollapsed] = useState(isMobile);
 
+  useEffect(() => {
+    isMobile ? collapse() : resetWidth();
+  }, [isMobile]);
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  useEffect(() => {
+    isMobile && collapse();
+  }, [pathname, isMobile]);
+
+  const handleMouseDown = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
     event.preventDefault();
-    event.stopPropagation()
+    event.stopPropagation();
 
     isResizingRef.current = true;
-    document.addEventListener("mousemove", handleMouseMove)
-    document.addEventListener("mouseup", handleMouseUp)
-  }
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
 
   const handleMouseMove = (event: MouseEvent) => {
-    if(!isResizingRef.current) return;
+    if (!isResizingRef.current) return;
     let newWidth = event.clientX;
 
-    if(newWidth < 240) newWidth = 240
-    if(newWidth > 400) newWidth = 480
+    if (newWidth < 240) newWidth = 240;
+    if (newWidth > 400) newWidth = 480;
 
     if (sidebarRef.current && navbarRef.current) {
-      sidebarRef.current.style.width = `${newWidth}px`
-      navbarRef.current.style.setProperty("left", `${newWidth}px`)
-      navbarRef.current.style.setProperty("width", `calc(100% - ${newWidth}px)` )
+      sidebarRef.current.style.width = `${newWidth}px`;
+      navbarRef.current.style.setProperty('left', `${newWidth}px`);
+      navbarRef.current.style.setProperty(
+        'width',
+        `calc(100% - ${newWidth}px)`,
+      );
     }
-  }
+  };
   const handleMouseUp = () => {
-    isResizingRef.current = false
-    document.removeEventListener("mousemove", handleMouseMove)
-    document.removeEventListener("mouseup", handleMouseUp)
-  }
+    isResizingRef.current = false;
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  };
+
+  const resetWidth = () => {
+    if (sidebarRef.current && navbarRef.current) {
+      setIsCollapsed(false);
+      setIsResetting(true);
+      sidebarRef.current.style.width = isMobile ? '100%' : '240px';
+      navbarRef.current.style.setProperty(
+        'width',
+        isMobile ? '0' : 'calc(100% - 240px)',
+      );
+      navbarRef.current.style.setProperty('left', isMobile ? '100%' : '240px');
+      setTimeout(() => setIsResetting(false), 300);
+    }
+  };
+
+  const collapse = () => {
+    if (sidebarRef.current && navbarRef.current) {
+      setIsCollapsed(true);
+      setIsResetting(true);
+      sidebarRef.current.style.width = '0';
+      navbarRef.current.style.setProperty('width', '100%');
+      navbarRef.current.style.setProperty('left', '0');
+      setTimeout(() => setIsResetting(false), 300);
+    }
+  };
+
   return (
     <>
       <aside
@@ -60,6 +98,7 @@ export const Navigation = () => {
             isMobile && 'opacity-100',
           )}
           role="button"
+          onClick={collapse}
         >
           <ChevronLeft className="w-6 h-6" />
         </div>
@@ -71,7 +110,7 @@ export const Navigation = () => {
         </div>
         <div
           onMouseDown={handleMouseDown}
-          onClick={() => {}}
+          onClick={resetWidth}
           className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0"
         />
       </aside>
@@ -85,7 +124,11 @@ export const Navigation = () => {
       >
         <div className="bg-transparent px-3 py-2 w-full">
           {isCollapse && (
-            <MenuIcon role="button" className="h-6 w-6 text-muted-foreground" />
+            <MenuIcon
+              role="button"
+              onClick={resetWidth}
+              className="h-6 w-6 text-muted-foreground"
+            />
           )}
         </div>
       </nav>
