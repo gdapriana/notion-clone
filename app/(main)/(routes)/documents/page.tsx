@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import { useUser } from '@clerk/clerk-react';
+import { Button } from '@/components/ui/button';
+import { PlusCircle } from 'lucide-react';
 
 const DocumentsPage = () => {
   const { user } = useUser();
@@ -21,6 +23,14 @@ const DocumentsPage = () => {
         width="300"
         className="hidden dark:block"
       />
+
+      <h2 className="text-lg font-medium">
+        Welcome to {user?.fullName}&apos;s mindmemo
+      </h2>
+      <Button className="gap-2">
+        <PlusCircle className="w-4" />
+        Create note
+      </Button>
     </div>
   );
 };
