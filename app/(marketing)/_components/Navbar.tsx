@@ -9,8 +9,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { SignInButton, UserButton } from '@clerk/clerk-react';
 import { LogIn } from 'lucide-react';
 import { metadata } from '@/app/(marketing)/_components/metadata';
+import {useUser} from "@clerk/clerk-react";
 
 export const Navbar = () => {
+  const {user} = useUser()
   const { isAuthenticated, isLoading } = useConvexAuth();
   const scrolled = useScrollTop();
   return (
@@ -32,8 +34,9 @@ export const Navbar = () => {
           </SignInButton>
         )}
         {isAuthenticated && !isLoading && (
-          <div>
+          <div className="flex gap-2 mr-4 justify-center items-center">
             <UserButton afterSignOutUrl="/" />
+            <p className="text-sm">{user?.fullName}</p>
           </div>
         )}
         <DarkModeToggle />
