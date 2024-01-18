@@ -1,18 +1,27 @@
 'use client';
 
-import { ChevronLeft, MenuIcon } from 'lucide-react';
+import {
+  ChevronLeft,
+  MenuIcon,
+  PlusCircle,
+  Search,
+  Settings,
+} from 'lucide-react';
 import { useRef, ElementRef, useState, useEffect } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { UserItem } from '@/app/(main)/_components/UserItem';
-import {useQuery} from "convex/react";
-import {api} from "@/convex/_generated/api";
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { Item } from '@/app/(main)/_components/Item';
+import { toast } from 'sonner';
+import { DocumentList } from '@/app/(main)/_components/DocumentList';
 
 export const Navigation = () => {
-  const documents = useQuery(api.documents.get)
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const create = useMutation(api.documents.create);
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<'aside'>>(null);
@@ -86,6 +95,15 @@ export const Navigation = () => {
     }
   };
 
+  const handleCreate = () => {
+    const promise = create({ title: 'Untilted' });
+    toast.promise(promise, {
+      success: 'Success create page',
+      loading: 'Loading create page',
+      error: 'Failed create page',
+    });
+  };
+
   return (
     <>
       <aside
@@ -108,13 +126,12 @@ export const Navigation = () => {
         </div>
         <div className="">
           <UserItem />
+          <Item label="Search" onClick={() => {}} icon={Search} isSearch />
+          <Item label="Settings" onClick={() => {}} icon={Settings} />
+          <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
         </div>
         <div className="mt-4">
-          {
-            documents?.map((item) => {
-              return <p key={item._id}>{item.title}</p>
-            })
-          }
+          <DocumentList />
         </div>
         <div
           onMouseDown={handleMouseDown}
