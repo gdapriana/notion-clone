@@ -10,6 +10,7 @@ import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import metadata from "@/app/(main)/_components/metadata"
 
 interface ItemProps {
   id?: Id<'documents'>;
@@ -48,15 +49,15 @@ export const Item = ({
   const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation()
     if (!id) return;
-    const promise = create({ title: 'Untilted', parentDocument: id }).then(
+    const promise = create({ title: 'Untitled', parentDocument: id }).then(
       (documentId) => {
         if (!expanded) onExpand?.();
         // router.push(`/documents/${documentId}`);
       });
     toast.promise(promise, {
-      loading: "Creating a new note...",
-      success: "New note created!",
-      error: "Failed to create a new note"
+      loading: metadata.toast.createPage.loading,
+      success: metadata.toast.createPage.success,
+      error: metadata.toast.createPage.error,
     })
   };
 

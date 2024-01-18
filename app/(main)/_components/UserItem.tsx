@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SignOutButton, useUser } from '@clerk/clerk-react';
+import metadata from '@/app/(main)/_components/metadata';
 
 export const UserItem = () => {
   const { user } = useUser();
@@ -49,7 +50,7 @@ export const UserItem = () => {
             </div>
             <div className="space-y-1">
               <p className="text-sm line-clamp-1">
-                {user?.fullName}&apos;s mindmemo
+                {user?.fullName}&apos;s {metadata.app}
               </p>
             </div>
           </div>

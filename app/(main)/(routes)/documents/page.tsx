@@ -7,6 +7,7 @@ import { PlusCircle } from 'lucide-react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { toast } from 'sonner';
+import metadata from "@/app/(main)/_components/metadata"
 
 const DocumentsPage = () => {
   const { user } = useUser();
@@ -18,9 +19,9 @@ const DocumentsPage = () => {
     });
 
     toast.promise(promise, {
-      loading: 'Creating a new note',
-      success: 'Success create a note',
-      error: 'Failed create a note',
+      loading: metadata.toast.createPage.loading,
+      success: metadata.toast.createPage.success,
+      error: metadata.toast.createPage.error,
     });
   };
 
@@ -42,7 +43,7 @@ const DocumentsPage = () => {
       />
 
       <h2 className="text-lg font-medium">
-        Welcome to {user?.fullName}&apos;s mindmemo
+        Welcome to {user?.firstName}&apos;s {metadata.app}
       </h2>
       <Button onClick={onCreate} className="gap-2">
         <PlusCircle className="w-4" />

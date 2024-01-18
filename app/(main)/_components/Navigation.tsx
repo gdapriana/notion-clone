@@ -3,9 +3,6 @@
 import {
   ChevronLeft,
   MenuIcon,
-  PlusCircle,
-  Search,
-  Settings,
 } from 'lucide-react';
 import { useRef, ElementRef, useState, useEffect } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
@@ -17,6 +14,7 @@ import { api } from '@/convex/_generated/api';
 import { Item } from '@/app/(main)/_components/Item';
 import { toast } from 'sonner';
 import { DocumentList } from '@/app/(main)/_components/DocumentList';
+import metadata from "@/app/(main)/_components/metadata"
 
 export const Navigation = () => {
   const pathname = usePathname();
@@ -98,9 +96,9 @@ export const Navigation = () => {
   const handleCreate = () => {
     const promise = create({ title: 'Untilted' });
     toast.promise(promise, {
-      success: 'Success create page',
-      loading: 'Loading create page',
-      error: 'Failed create page',
+      loading: metadata.toast.createPage.loading,
+      success: metadata.toast.createPage.success,
+      error: metadata.toast.createPage.error,
     });
   };
 
@@ -126,9 +124,9 @@ export const Navigation = () => {
         </div>
         <div className="">
           <UserItem />
-          <Item label="Search" onClick={() => {}} icon={Search} isSearch />
-          <Item label="Settings" onClick={() => {}} icon={Settings} />
-          <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
+          <Item label={metadata.tools.search.label} onClick={() => { }} icon={metadata.tools.search.icon} isSearch />
+          <Item label={metadata.tools.settings.label} onClick={() => { }} icon={metadata.tools.settings.icon} />
+          <Item onClick={handleCreate} label={metadata.tools.newPage.label} icon={metadata.tools.newPage.icon} />
         </div>
         <div className="mt-4">
           <DocumentList />
