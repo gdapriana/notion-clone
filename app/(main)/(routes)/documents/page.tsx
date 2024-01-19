@@ -7,7 +7,7 @@ import { PlusCircle } from 'lucide-react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { toast } from 'sonner';
-import metadata from "@/app/(main)/_components/metadata"
+import metadata from '@/app/(main)/_components/metadata';
 
 const DocumentsPage = () => {
   const { user } = useUser();

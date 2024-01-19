@@ -1,6 +1,13 @@
 'use client';
 
-import { ChevronDown, ChevronRight, LucideIcon, Plus } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronRight,
+  LucideIcon,
+  MoreHorizontal,
+  Plus,
+  Trash,
+} from 'lucide-react';
 
 import { Id } from '@/convex/_generated/dataModel';
 import { cn } from '@/lib/utils';
@@ -10,7 +17,15 @@ import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import metadata from "@/app/(main)/_components/metadata"
+import metadata from '@/app/(main)/_components/metadata';
+import {
+  DropdownMenu,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { useUser } from '@clerk/clerk-react';
 
 interface ItemProps {
   id?: Id<'documents'>;
@@ -37,8 +52,23 @@ export const Item = ({
   onExpand,
   expanded,
 }: ItemProps) => {
+  const { user } = useUser();
   const router = useRouter();
   const create = useMutation(api.documents.create);
+  const archive = useMutation(api.documents.archive);
+
+  const onArchive = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    if (!id) return;
+
+    const promise = archive({ id })
+      .then(() => router.push("/documents"))
+
+    toast.promise(promise, metadata.toast.archivePage);
+  };
+
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
@@ -47,18 +77,15 @@ export const Item = ({
   };
 
   const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    event.stopPropagation()
+    event.stopPropagation();
     if (!id) return;
     const promise = create({ title: 'Untitled', parentDocument: id }).then(
       (documentId) => {
         if (!expanded) onExpand?.();
         // router.push(`/documents/${documentId}`);
-      });
-    toast.promise(promise, {
-      loading: metadata.toast.createPage.loading,
-      success: metadata.toast.createPage.success,
-      error: metadata.toast.createPage.error,
-    })
+      },
+    );
+    toast.promise(promise, metadata.toast.createPage);
   };
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
@@ -95,7 +122,35 @@ export const Item = ({
       )}
       {!!id && (
         <div className="ml-auto flex items-center gap-x-2">
-          <div role='button' onClick={onCreate} className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+              <div
+                className="group-hover:opacity-100 opacity-0 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+                role="button"
+              >
+                <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              forceMount
+              align="start"
+              side="right"
+              className="w-60"
+            >
+              <DropdownMenuItem onClick={onArchive}>
+                <Trash className="h-4 w-4 mr-2" />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className="text-xs text-muted-foreground p-2">
+                Last edited by {user?.fullName}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div
+            role="button"
+            onClick={onCreate}
+            className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+          >
             <Plus className="w-4 h-4 text-muted-foreground" />
           </div>
         </div>
